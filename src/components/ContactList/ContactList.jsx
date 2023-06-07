@@ -1,10 +1,29 @@
-import { selectFilterContacts } from 'redux/selectors';
-import { useSelector, useDispatch } from 'react-redux';
-import { deleteContact } from 'redux/operations';
-import css from './ContactList.module.css';
-import { selectLoading, selectError } from 'redux/selectors';
 import { useEffect } from 'react';
-import { fetchContacts } from 'redux/operations';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  selectFilterContacts,
+  selectLoading,
+  selectError,
+} from 'redux/selectors';
+import { deleteContact, fetchContacts } from 'redux/operations';
+import { CloseIcon } from '@chakra-ui/icons';
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverArrow,
+  PopoverCloseButton,
+  Box,
+  Spinner,
+  Card,
+  CardBody,
+  CardHeader,
+  Heading,
+  Circle,
+  Button,
+} from '@chakra-ui/react';
 
 export const ContactList = () => {
   const dispatch = useDispatch();
@@ -17,19 +36,66 @@ export const ContactList = () => {
   }, [dispatch]);
 
   return (
-    <ul className={css.list}>
-      {isLoading && !error && <p>Loading tasks...</p>}
-      {contacts.map(({ id, name, phone }) => (
-        <li key={id} className={css.item}>
-          {name}: {phone}
-          <button
-            className={css.btn_delete}
-            onClick={() => dispatch(deleteContact(id))}
+    <Card bgGradient="linear(to-r, green.200, pink.500)" w="100%" pr="0" pl="0">
+      <CardHeader>
+        <Heading
+          size="md"
+          h="auto"
+          color="white"
+          fontSize="4xl"
+          fontWeight="extrabold"
+          textAlign="center"
+        >
+          Contacts
+        </Heading>
+      </CardHeader>
+      {isLoading && !error && (
+        <Spinner
+          color="pink.500"
+          size="md"
+          display="flex"
+          mr="auto"
+          ml="auto"
+        />
+      )}
+      <CardBody display="flex" flexWrap="wrap" gap="20px">
+        {contacts.map(({ id, name, phone }) => (
+          <Box
+            key={id}
+            justifyContent="space-between"
+            w="210px"
+            display="flex"
+            alignItems="center"
+            color="green"
+            bg="white"
+            borderRadius="10px"
+            p="10px"
           >
-            Delete
-          </button>
-        </li>
-      ))}
-    </ul>
+            <Popover isLazy placement="top-start">
+              <PopoverTrigger>
+                <Button bg="white">{name}</Button>
+              </PopoverTrigger>
+              <PopoverContent w="210px">
+                <PopoverHeader fontWeight="semibold">{name}</PopoverHeader>
+                <PopoverArrow />
+                <PopoverCloseButton />
+                <PopoverBody>{phone}</PopoverBody>
+              </PopoverContent>
+            </Popover>
+            <Circle
+              cursor="pointer"
+              ml="auto"
+              bg="pink.500"
+              display="flex"
+              size="40px"
+              type="submit"
+              onClick={() => dispatch(deleteContact(id))}
+            >
+              <CloseIcon color="white" w="10px" />
+            </Circle>
+          </Box>
+        ))}
+      </CardBody>
+    </Card>
   );
 };

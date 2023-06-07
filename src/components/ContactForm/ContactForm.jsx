@@ -4,7 +4,8 @@ import { addContact } from 'redux/operations';
 import { selectItems } from 'redux/selectors';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { nanoid } from 'nanoid';
-import css from './ContactForm.module.css';
+import { Input, InputGroup, InputLeftElement, Button } from '@chakra-ui/react';
+import { PhoneIcon, AtSignIcon, AddIcon } from '@chakra-ui/icons';
 
 export function ContactForm() {
   const [name, setName] = useState('');
@@ -27,57 +28,92 @@ export function ContactForm() {
   };
   const addSubmit = e => {
     e.preventDefault();
-    if (!name || !number) {
-      return Notify.failure(`The field is empty`);
-    }
     if (
       allContacts.some(
         contact =>
           contact.name.toLowerCase().trim() === name.toLowerCase().trim()
       )
     ) {
+      setName('');
+      e.target.reset();
       return Notify.failure(`${name} is already in contacts!`);
+    } else if (allContacts.some(contact => contact.number === number)) {
+      e.target.reset();
+      setNumber('');
+      const nameAdded = allContacts.find(contact => contact.number === number);
+      return Notify.failure(
+        `${number} is already in contacts with ${nameAdded.name}!`
+      );
+    } else {
+      const newContact = {
+        id: nanoid(),
+        name,
+        number,
+      };
+      dispatch(addContact(newContact));
+      e.target.reset();
+      setName('');
+      setNumber('');
     }
-    const newContact = {
-      id: nanoid(),
-      name,
-      number,
-    };
-    dispatch(addContact(newContact));
-    setName('');
-    setNumber('');
   };
   return (
-    <form className={css.form} onSubmit={addSubmit}>
-      <label className={css.label}>
-        Name
-        <input
-          className={css.input}
-          type="text"
-          name="name"
-          value={name}
-          onChange={addChange}
-          pattern="[A-Za-zА-Яа-яЁё]{2,20}"
-          title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-          required
-        />
+    <form onSubmit={addSubmit}>
+      <label>
+        <InputGroup mb="20px" mt="20px">
+          <InputLeftElement pointerEvents="none">
+            <AtSignIcon color="white" />
+          </InputLeftElement>
+          <Input
+            _focus={{
+              borderColor: 'pink.500',
+              boxShadow: '0 0 0 1px #D53F8C',
+            }}
+            size="md"
+            w="100%"
+            type="text"
+            name="name"
+            value={name}
+            onChange={addChange}
+            pattern="[A-Za-zА-Яа-яЁё]{2,20}"
+            title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+            required
+          />
+        </InputGroup>
       </label>
-      <label className={css.label}>
-        Number
-        <input
-          className={css.input}
-          type="tel"
-          name="number"
-          value={number}
-          onChange={addChange}
-          pattern="\+?[0-9\s\-\(\)]+"
-          title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-          required
-        />
+      <label>
+        <InputGroup>
+          <InputLeftElement pointerEvents="none">
+            <PhoneIcon color="white" />
+          </InputLeftElement>
+          <Input
+            _focus={{
+              borderColor: 'pink.500',
+              boxShadow: '0 0 0 1px #D53F8C',
+            }}
+            size="md"
+            w="100%"
+            type="tel"
+            name="number"
+            value={number}
+            onChange={addChange}
+            pattern="\+?[0-9\s\-\(\)]+"
+            title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+            required
+          />
+        </InputGroup>
       </label>
-      <button className={css.btn_add} type="submit">
+      <Button
+        leftIcon={<AddIcon />}
+        colorScheme="pink"
+        variant="solid"
+        type="submit"
+        mr="auto"
+        ml="auto"
+        display="flex"
+        mt="20px"
+      >
         Add contact
-      </button>
+      </Button>
     </form>
   );
 }

@@ -36,7 +36,12 @@ export const ContactList = () => {
   }, [dispatch]);
 
   return (
-    <Card bgGradient="linear(to-r, green.200, pink.500)" w="100%" pr="0" pl="0">
+    <Card
+      bgGradient="linear(to-r, pink.200, purple.500)"
+      w="100%"
+      pr="0"
+      pl="0"
+    >
       <CardHeader>
         <Heading
           size="md"
@@ -73,9 +78,11 @@ export const ContactList = () => {
           >
             <Popover isLazy placement="top-start">
               <PopoverTrigger>
-                <Button bg="white">{name}</Button>
+                <Button color="pink.500" bg="white">
+                  {name}
+                </Button>
               </PopoverTrigger>
-              <PopoverContent w="210px">
+              <PopoverContent color="purple.500" w="210px">
                 <PopoverHeader fontWeight="semibold">{name}</PopoverHeader>
                 <PopoverArrow />
                 <PopoverCloseButton />

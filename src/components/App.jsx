@@ -5,11 +5,11 @@ import { Container, Box, Center } from '@chakra-ui/react';
 
 export function App() {
   return (
-    <Box w="auto" h="auto" bgGradient="linear(to-r, green.200, pink.500)">
+    <Box w="auto" minH="100vh" bgGradient="linear(to-r, pink.200, purple.500)">
       <Container
-        bgGradient="linear(to-r, green.200, pink.500)"
+        bgGradient="linear(to-r, pink.200, purple.500)"
         w="auto"
-        h="auto"
+        minH="100vh"
         pt="50px"
         pb="50px"
       >
